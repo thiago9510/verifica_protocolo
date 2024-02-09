@@ -5,7 +5,7 @@ import { consultaProtocoloFetch } from "./fetch/protocolosFetch.js"
 
 const start = async () => {
 
-    const AlunosConsultados = []
+    const protocolosLocalizados = []
     const AlunosNaoLocalizados = []
     try {
         const dadosPlanilha = await lerPlanilha('./import')
@@ -17,15 +17,44 @@ const start = async () => {
                     try {
                         const retornoProtocolos = await consultaProtocoloFetch(ResConsultaAluno[0])
                         if (retornoProtocolos.data.length == 0) {
-                            console.log(`Não existe protocolo em Aberto ou em Andamento`)
-                            console.log(retornoProtocolos.data.length)                            
-                        }else if (retornoProtocolos.data.length == 1){
-                            console.log(`Existe 1 protocolo`)
-                            console.log(retornoProtocolos.data.length)
+                            console.log(`apenas um curso e sem protocolos`) //Não fazer nada                                                                          
+                        } else if (retornoProtocolos.data.length == 1) {
+                            console.log(`apenas um curso e com um protocolo`)
+                            // organizando dados:
+                            let dadosRetorno = {
+                                pes_cpf: ResConsultaAluno[0].pes_cpf,
+                                curso_nome: ResConsultaAluno[0].curso_nome,
+                                alunocurso_situacao: ResConsultaAluno[0].alunocurso_situacao,
+                                protocolo_id: retornoProtocolos.data[0].protocolo_id,
+                                protocolo_situacao: retornoProtocolos.data[0].protocolo_situacao,
+                                protocolo_solicitante_nome: retornoProtocolos.data[0].protocolo_solicitante_nome,
+                                protocolo_assunto: retornoProtocolos.data[0].protocolo_assunto,
+                                protocolo_data_cadastro: retornoProtocolos.data[0].protocolo_data_cadastro,
+                                protocolo_data_vencimento: retornoProtocolos.data[0].protocolo_data_vencimento,
+                                setor_descricao: retornoProtocolos.data[0].setor_descricao,
+                                solicitacao_descricao: retornoProtocolos.data[0].solicitacao_descricao,
+                            }
+                            protocolosLocalizados.push(dadosRetorno) //1 protocolos 1 curso                                   
                         } else if (retornoProtocolos.data.length > 1) {
-                            console.log(`Existe mais de 1 protocolo`)
-                            console.log(retornoProtocolos.data.length)
+                            console.log(`apenas um curso e mais de um protocolo`)
+                            for (let protocolos of retornoProtocolos.data) {
+                                let dadosRetorno = {
+                                    pes_cpf: ResConsultaAluno[0].pes_cpf,
+                                    curso_nome: ResConsultaAluno[0].curso_nome,
+                                    alunocurso_situacao: ResConsultaAluno[0].alunocurso_situacao,
+                                    protocolo_id: protocolos.protocolo_id,
+                                    protocolo_situacao: protocolos.protocolo_situacao,
+                                    protocolo_solicitante_nome: protocolos.protocolo_solicitante_nome,
+                                    protocolo_assunto: protocolos.protocolo_assunto,
+                                    protocolo_data_cadastro: protocolos.protocolo_data_cadastro,
+                                    protocolo_data_vencimento: protocolos.protocolo_data_vencimento,
+                                    setor_descricao: protocolos.setor_descricao,
+                                    solicitacao_descricao: protocolos.solicitacao_descricao,
+                                }
+                                protocolosLocalizados.push(dadosRetorno) //mais de 1 protocolo 1 curso  
+                            }
                         }
+
                     } catch (error) {
                         console.log(error)
                     }
@@ -33,24 +62,50 @@ const start = async () => {
                     //mais de 1 curso
                     for (let arrayAluno of ResConsultaAluno) {
                         if (arrayAluno.cursoNome === aluno.cursoExcel) {
-                            console.log(`aluno tem mais de 1 curso e foi localizado: ${ResConsultaAluno.length}`)
                             try {
                                 const retornoProtocolos = await consultaProtocoloFetch(ResConsultaAluno[0])
                                 if (retornoProtocolos.data.length == 0) {
-                                    console.log(`Não existe protocolo em Aberto ou em Andamento`)
-                                    console.log(retornoProtocolos.data.length)                            
-                                }else if (retornoProtocolos.data.length == 1){
-                                    console.log(`Existe 1 protocolo`)
-                                    console.log(retornoProtocolos.data.length)
+                                    console.log(`Mais de um curso sem protocolos`) //Não fazer nada                                                             
+                                } else if (retornoProtocolos.data.length == 1) {
+                                    console.log(`Mais de um curso e um protocolo`)
+                                    let dadosRetorno = {
+                                        pes_cpf: arrayAluno.pes_cpf,
+                                        curso_nome: arrayAluno.curso_nome,
+                                        alunocurso_situacao: arrayAluno.alunocurso_situacao,
+                                        protocolo_id: retornoProtocolos.data[0].protocolo_id,
+                                        protocolo_situacao: retornoProtocolos.data[0].protocolo_situacao,
+                                        protocolo_solicitante_nome: retornoProtocolos.data[0].protocolo_solicitante_nome,
+                                        protocolo_assunto: retornoProtocolos.data[0].protocolo_assunto,
+                                        protocolo_data_cadastro: retornoProtocolos.data[0].protocolo_data_cadastro,
+                                        protocolo_data_vencimento: retornoProtocolos.data[0].protocolo_data_vencimento,
+                                        setor_descricao: retornoProtocolos.data[0].setor_descricao,
+                                        solicitacao_descricao: retornoProtocolos.data[0].solicitacao_descricao,
+                                    }
+                                    protocolosLocalizados.push(dadosRetorno) //1 protocolos 1 curso  
                                 } else if (retornoProtocolos.data.length > 1) {
-                                    console.log(`Existe mais de 1 protocolo`)
-                                    console.log(retornoProtocolos.data.length)
+                                    console.log(`Mais de um curso e mais de um protocolo`)
+                                    for (let protocolos of retornoProtocolos.data) {
+                                        let dadosRetorno = {
+                                            pes_cpf: ResConsultaAluno[0].pes_cpf,
+                                            curso_nome: ResConsultaAluno[0].curso_nome,
+                                            alunocurso_situacao: ResConsultaAluno[0].alunocurso_situacao,
+                                            protocolo_id: protocolos.protocolo_id,
+                                            protocolo_situacao: protocolos.protocolo_situacao,
+                                            protocolo_solicitante_nome: protocolos.protocolo_solicitante_nome,
+                                            protocolo_assunto: protocolos.protocolo_assunto,
+                                            protocolo_data_cadastro: protocolos.protocolo_data_cadastro,
+                                            protocolo_data_vencimento: protocolos.protocolo_data_vencimento,
+                                            setor_descricao: protocolos.setor_descricao,
+                                            solicitacao_descricao: protocolos.solicitacao_descricao,
+                                        }
+                                        protocolosLocalizados.push(dadosRetorno) //mais de 1 protocolo 1 curso  
+                                    }
                                 }
                             } catch (error) {
                                 console.log(error)
                             }
                         } else {
-                            //curso nao localizado pelo nome
+                            AlunosNaoLocalizados.push(arrayAluno)
                             console.log(`Curso não localizado ${arrayAluno}`)
                         }
                     }
@@ -58,14 +113,19 @@ const start = async () => {
             } catch (error) {
                 console.error(error)
             }
+            //ultimo item da itegração
+            console.log(protocolosLocalizados) // teste
 
         }
-        //retornar dados
-
-        //exportToExcel(dadosPlanilha, 'dadosExportados')
+        //retornar dados // após a iteração
+        exportToExcel(protocolosLocalizados, 'protocolosLocalizados')
+        exportToExcel(AlunosNaoLocalizados, 'AlunosNaoLocalizados')
     } catch (error) {
         console.log(error)
     }
 }
 start()
+
+
+
 
