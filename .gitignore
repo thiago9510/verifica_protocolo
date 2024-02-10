@@ -1,6 +1,3 @@
-node_modules
-node_modules/
-import
-import/
-export
 export/
+import/
+node_modules/

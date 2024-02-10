@@ -6,7 +6,7 @@ export const exportToExcel = async (data, filename) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sheet 1')
 
-    // Adiciona os cabeçalhos
+    // Adiciona os cabeçalhos  
     const headers = Object.keys(data[0])
     worksheet.addRow(headers);
 

@@ -119,7 +119,10 @@ const start = async () => {
         }
         //retornar dados // após a iteração
         exportToExcel(protocolosLocalizados, 'protocolosLocalizados')
-        exportToExcel(AlunosNaoLocalizados, 'AlunosNaoLocalizados')
+        if(AlunosNaoLocalizados.length > 0){
+            exportToExcel(AlunosNaoLocalizados, 'AlunosNaoLocalizados')
+        }
+        
     } catch (error) {
         console.log(error)
     }
